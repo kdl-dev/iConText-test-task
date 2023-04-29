@@ -1,0 +1,14 @@
+outputs:
+    - {
+        storage: /dev/stdout,
+        level: debug,
+        encoding: console
+    }
+    - {
+        storage: common.log,
+        level: debug,
+        encoding: console
+    }
+add_caller: true
+stacktrace_level: error    
+    
