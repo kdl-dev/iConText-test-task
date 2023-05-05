@@ -4,3 +4,7 @@ type HMACSHA512DTO struct {
 	Text string `json:"text" validate:"required"`
 	Key  string `json:"key" validate:"required"`
 }
+
+type Signature struct {
+	Value string
+}

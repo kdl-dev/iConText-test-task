@@ -17,6 +17,8 @@ type errorResponse struct {
 	Value       string
 }
 
+type JSON map[string]interface{}
+
 func (e *errorResponse) String() string {
 	return fmt.Sprintf("[%+v %+v %+v] ", e.FailedField, e.Tag, e.Value)
 }
@@ -57,13 +59,14 @@ func BindJSON(reader io.Reader, obj interface{}) error {
 	return nil
 }
 
-func SendJSON(w http.ResponseWriter, obj map[string]interface{}) error {
+func SendJSON(w http.ResponseWriter, status int, obj map[string]interface{}) error {
 	b, err := json.Marshal(obj)
 	if err != nil {
 		return fmt.Errorf("json marshal error: %w", err)
 	}
 
 	w.Header().Add("Content-Type", mime.TypeByExtension(".json"))
+	w.WriteHeader(status)
 	if _, err := w.Write(b); err != nil {
 		return fmt.Errorf("json write error: %w", err)
 	}
