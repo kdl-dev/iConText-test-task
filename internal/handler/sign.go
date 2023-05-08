@@ -20,16 +20,9 @@ func (h *Handler) sha512Sign(w http.ResponseWriter, r *http.Request) {
 
 	h.Logger.Info(fmt.Sprintf("signing start: %+v", inputSHA512))
 
-	signature, err := h.services.Signature.SHA512Sign(&inputSHA512)
-	if err != nil {
-		err = h.handleError(w, http.StatusInternalServerError, fmt.Errorf("signing error: %w", err))
-		if err != nil {
-			h.Logger.Error(err.Error())
-		}
-		return
-	}
+	signature := h.services.Signature.SHA512Sign(&inputSHA512)
 
-	err = utils.SendJSON(w, http.StatusOK, utils.JSON{"signature": signature.Value})
+	err := utils.SendJSON(w, http.StatusOK, utils.JSON{"signature": signature.Value})
 	if err != nil {
 		h.Logger.Error(fmt.Errorf("%s: %w", jsonSendErr, err).Error())
 		return

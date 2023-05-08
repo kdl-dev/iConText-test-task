@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/kdl-dev/iConText-test-task/internal/entity"
 	"github.com/kdl-dev/iConText-test-task/internal/repository"
@@ -16,5 +17,11 @@ func NewMathOperation(repo *repository.Repository) *mathOperation {
 }
 
 func (m *mathOperation) Increment(ctx context.Context, incrementInput *entity.IncrementDTO) (*entity.IncrementResult, error) {
-	return m.repo.MathOperation.Increment(ctx, incrementInput)
+
+	incrementResult, err := m.repo.MathOperation.Increment(ctx, incrementInput)
+	if err != nil {
+		return nil, fmt.Errorf("service.math.Increment error: %w", err)
+	}
+
+	return incrementResult, nil
 }
