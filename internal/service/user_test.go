@@ -47,7 +47,7 @@ func TestCreateUser(t *testing.T) {
 		t.Logf("running: %s", test.name)
 		userRepo := mocks.NewUser(t)
 		test.expections(userRepo)
-		svc := NewUser(&repository.Repository{User: userRepo})
+		svc := NewUserService(&repository.Repository{User: userRepo})
 
 		_, err := svc.CreateUser(context.Background(), test.input)
 		if err != nil {

@@ -8,15 +8,15 @@ import (
 	"github.com/kdl-dev/iConText-test-task/internal/repository"
 )
 
-type user struct {
+type userService struct {
 	repo *repository.Repository
 }
 
-func NewUser(repo *repository.Repository) *user {
-	return &user{repo: repo}
+func NewUserService(repo *repository.Repository) *userService {
+	return &userService{repo: repo}
 }
 
-func (u *user) CreateUser(ctx context.Context, user *entity.UserDTO) (*entity.User, error) {
+func (u *userService) CreateUser(ctx context.Context, user *entity.UserDTO) (*entity.User, error) {
 
 	dbUser, err := u.repo.User.CreateUser(ctx, user)
 	if err != nil {

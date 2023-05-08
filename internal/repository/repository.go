@@ -22,7 +22,7 @@ type Repository struct {
 
 func NewRepository(pgPool *storage.PostgresPool, redisPool *storage.RedisPool) *Repository {
 	return &Repository{
-		MathOperation: NewMathOperation(redisPool),
-		User:          NewUser(pgPool),
+		MathOperation: NewMathOperationRepo(redisPool),
+		User:          NewUserRepo(pgPool),
 	}
 }

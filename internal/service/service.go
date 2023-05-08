@@ -29,8 +29,8 @@ type Service struct {
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		MathOperation: NewMathOperation(repo),
-		User:          NewUser(repo),
-		Signature:     NewSignature(),
+		MathOperation: NewMathOperationService(repo),
+		User:          NewUserService(repo),
+		Signature:     NewSignatureService(),
 	}
 }

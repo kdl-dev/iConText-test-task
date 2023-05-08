@@ -8,14 +8,14 @@ import (
 	"github.com/kdl-dev/iConText-test-task/internal/entity"
 )
 
-type signature struct {
+type signatureService struct {
 }
 
-func NewSignature() *signature {
-	return &signature{}
+func NewSignatureService() *signatureService {
+	return &signatureService{}
 }
 
-func (s *signature) SHA512Sign(sha512Input *entity.HMACSHA512DTO) *entity.Signature {
+func (s *signatureService) SHA512Sign(sha512Input *entity.HMACSHA512DTO) *entity.Signature {
 	var token entity.Signature
 
 	hash := hmac.New(sha512.New, []byte(sha512Input.Key))

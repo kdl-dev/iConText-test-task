@@ -43,7 +43,7 @@ func TestIncrement(t *testing.T) {
 		t.Logf("running: %s", test.name)
 		mathOperationRepo := mocks.NewMathOperation(t)
 		test.expections(context.Background(), mathOperationRepo)
-		svc := NewMathOperation(&repository.Repository{MathOperation: mathOperationRepo})
+		svc := NewMathOperationService(&repository.Repository{MathOperation: mathOperationRepo})
 
 		_, err := svc.Increment(context.Background(), test.input)
 		if err != nil {

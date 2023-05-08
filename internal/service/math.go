@@ -8,15 +8,15 @@ import (
 	"github.com/kdl-dev/iConText-test-task/internal/repository"
 )
 
-type mathOperation struct {
+type mathOperationService struct {
 	repo *repository.Repository
 }
 
-func NewMathOperation(repo *repository.Repository) *mathOperation {
-	return &mathOperation{repo: repo}
+func NewMathOperationService(repo *repository.Repository) *mathOperationService {
+	return &mathOperationService{repo: repo}
 }
 
-func (m *mathOperation) Increment(ctx context.Context, incrementInput *entity.IncrementDTO) (*entity.IncrementResult, error) {
+func (m *mathOperationService) Increment(ctx context.Context, incrementInput *entity.IncrementDTO) (*entity.IncrementResult, error) {
 
 	incrementResult, err := m.repo.MathOperation.Increment(ctx, incrementInput)
 	if err != nil {

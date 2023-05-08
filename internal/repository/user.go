@@ -10,15 +10,15 @@ import (
 
 var tableName = "users"
 
-type user struct {
+type userRepo struct {
 	pgPool *storage.PostgresPool
 }
 
-func NewUser(pgPool *storage.PostgresPool) *user {
-	return &user{pgPool: pgPool}
+func NewUserRepo(pgPool *storage.PostgresPool) *userRepo {
+	return &userRepo{pgPool: pgPool}
 }
 
-func (m *user) CreateUser(ctx context.Context, user *entity.UserDTO) (*entity.User, error) {
+func (m *userRepo) CreateUser(ctx context.Context, user *entity.UserDTO) (*entity.User, error) {
 	statement := `INSERT INTO ` + tableName + ` (name, age) VALUES($1, $2) RETURNING user_id, name, age;`
 	var createUserResult entity.User
 

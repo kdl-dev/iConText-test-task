@@ -24,28 +24,18 @@ var (
 	loggerConfigFilePath = "config/logger.yaml"
 	envConfigFilePath    = ".env"
 	AppCfg               config.App
+
+	redisHost *string
+	redisPort *string
+
+	postgresOpt storage.PostgresOptions
+	redisOpt    redis.Options
+
+	pgPool    *storage.PostgresPool
+	redisPool *storage.RedisPool
 )
 
-func init() {
-	if err := cleanenv.ReadConfig(envConfigFilePath, &AppCfg); err != nil {
-		log.Fatal(err)
-	}
-
-	var logger config.Logger
-	if err := cleanenv.ReadConfig(loggerConfigFilePath, &logger); err != nil {
-		log.Fatal(err)
-	}
-
-	AppCfg.Logger = logger
-}
-
 func main() {
-
-	redisHost := flag.String("host", AppCfg.Redis.Host, "redis host")
-	redisPort := flag.String("port", AppCfg.Redis.Port, "redis port")
-
-	flag.Parse()
-
 	Log, err := logger.NewLogger(&AppCfg.Logger)
 	if err != nil {
 		log.Fatal(err)
@@ -53,36 +43,9 @@ func main() {
 
 	ctx := context.Background()
 
-	postgresOpt := storage.PostgresOptions{
-		Role:     AppCfg.Postgres.Role,
-		Password: AppCfg.Postgres.Password,
-		Host:     AppCfg.Postgres.Host,
-		DBName:   AppCfg.Postgres.DBName,
-		SSLMode:  AppCfg.Postgres.SSLMode,
-	}
-
-	pgPool, err := storage.NewPostgresPool(ctx, &postgresOpt)
-	if err != nil {
-		Log.Fatal(err.Error())
-	}
-
-	pgPool.InitTables(os.Getenv("PG_INIT_TABLES_FILE_PATH"))
-
-	redisOpt := redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", *redisHost, *redisPort),
-		DB:       AppCfg.Redis.DB,
-		Username: AppCfg.Redis.User,
-		Password: AppCfg.Redis.Password,
-	}
-
-	redisPool, err := storage.NewRedisPool(ctx, &redisOpt)
-	if err != nil {
-		Log.Fatal(err.Error())
-	}
-
 	repo := repository.NewRepository(pgPool, redisPool)
-	services := service.NewService(repo)
-	h := handler.NewHandler(ctx, services, Log)
+	svc := service.NewService(repo)
+	h := handler.NewHandler(ctx, svc, Log)
 	router := http.NewServeMux()
 	h.InitRoutes(router)
 
@@ -125,5 +88,59 @@ func main() {
 		Log.Info(fmt.Errorf("redis pool close error: %w", err).Error())
 	} else {
 		Log.Info("redis connection pool closed")
+	}
+}
+
+func init() {
+	if err := cleanenv.ReadConfig(envConfigFilePath, &AppCfg); err != nil {
+		log.Fatal(err)
+	}
+
+	var logger config.Logger
+	if err := cleanenv.ReadConfig(loggerConfigFilePath, &logger); err != nil {
+		log.Fatal(err)
+	}
+
+	AppCfg.Logger = logger
+
+	initStorageOptions()
+	initConnPools()
+}
+
+func initStorageOptions() {
+	redisHost = flag.String("host", AppCfg.Redis.Host, "redis host")
+	redisPort = flag.String("port", AppCfg.Redis.Port, "redis port")
+	flag.Parse()
+
+	postgresOpt = storage.PostgresOptions{
+		Role:     AppCfg.Postgres.Role,
+		Password: AppCfg.Postgres.Password,
+		Host:     AppCfg.Postgres.Host,
+		DBName:   AppCfg.Postgres.DBName,
+		SSLMode:  AppCfg.Postgres.SSLMode,
+	}
+
+	redisOpt = redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", *redisHost, *redisPort),
+		DB:       AppCfg.Redis.DB,
+		Username: AppCfg.Redis.User,
+		Password: AppCfg.Redis.Password,
+	}
+}
+
+func initConnPools() {
+	var err error
+	pgPool, err = storage.NewPostgresPool(context.Background(), &postgresOpt)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	if err = pgPool.InitTables(os.Getenv("PG_INIT_TABLES_FILE_PATH")); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	redisPool, err = storage.NewRedisPool(context.Background(), &redisOpt)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }

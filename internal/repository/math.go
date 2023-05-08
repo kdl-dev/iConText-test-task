@@ -9,15 +9,15 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type mathOperation struct {
+type mathOperationRepo struct {
 	redisPool *storage.RedisPool
 }
 
-func NewMathOperation(redisPool *storage.RedisPool) *mathOperation {
-	return &mathOperation{redisPool: redisPool}
+func NewMathOperationRepo(redisPool *storage.RedisPool) *mathOperationRepo {
+	return &mathOperationRepo{redisPool: redisPool}
 }
 
-func (m *mathOperation) Increment(ctx context.Context, incrementInput *entity.IncrementDTO) (*entity.IncrementResult, error) {
+func (m *mathOperationRepo) Increment(ctx context.Context, incrementInput *entity.IncrementDTO) (*entity.IncrementResult, error) {
 	var newValue entity.IncrementResult
 
 	cmd := m.redisPool.Pool.Get(ctx, incrementInput.Key)
