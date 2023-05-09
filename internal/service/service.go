@@ -27,6 +27,14 @@ type Service struct {
 	Signature
 }
 
+var (
+	Services *Service
+)
+
+func init() {
+	Services = NewService(repository.Repo)
+}
+
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		MathOperation: NewMathOperationService(repo),

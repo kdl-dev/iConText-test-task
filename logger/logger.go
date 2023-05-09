@@ -3,9 +3,10 @@ package logger
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
-	"github.com/kdl-dev/iConText-test-task/pkg/config"
+	"github.com/kdl-dev/iConText-test-task/internal/config"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -15,8 +16,19 @@ type Logger struct {
 	zap.Logger
 }
 
-func NewLogger(cfg *config.Logger) (*Logger, error) {
+var (
+	Log *Logger
+)
 
+func init() {
+	var err error
+	Log, err = NewLogger(&config.AppCfg.Logger)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func NewLogger(cfg *config.Logger) (*Logger, error) {
 	cores, err := getLogCores(cfg, zapcore.ISO8601TimeEncoder)
 	if err != nil {
 		return nil, fmt.Errorf("get log cores error: %w", err)
