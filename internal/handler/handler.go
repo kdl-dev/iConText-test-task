@@ -13,8 +13,6 @@ import (
 var (
 	jsonBindErr = "json bind error"
 	jsonSendErr = "json send error"
-
-	Context = context.Background()
 )
 
 type Handler struct {
@@ -22,17 +20,6 @@ type Handler struct {
 	services *service.Service
 	Logger   *logger.Logger
 	GoId     uint64
-}
-
-var (
-	Handlers *Handler
-	Router   *http.ServeMux
-)
-
-func init() {
-	Handlers = NewHandler(Context, service.Services, logger.Log)
-	Router = http.NewServeMux()
-	Handlers.InitRoutes(Router)
 }
 
 func (h *Handler) handleError(w http.ResponseWriter, status int, err error) error {

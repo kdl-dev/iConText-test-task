@@ -3,7 +3,6 @@ package logger
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/kdl-dev/iConText-test-task/internal/config"
@@ -19,14 +18,6 @@ type Logger struct {
 var (
 	Log *Logger
 )
-
-func init() {
-	var err error
-	Log, err = NewLogger(&config.AppCfg.Logger)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 func NewLogger(cfg *config.Logger) (*Logger, error) {
 	cores, err := getLogCores(cfg, zapcore.ISO8601TimeEncoder)

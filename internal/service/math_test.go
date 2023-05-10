@@ -12,7 +12,6 @@ import (
 )
 
 func TestIncrement(t *testing.T) {
-
 	var val int64 = 19
 	incrementInput := &entity.IncrementDTO{Key: "age", Value: &val}
 

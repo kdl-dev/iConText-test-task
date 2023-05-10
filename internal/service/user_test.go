@@ -12,9 +12,7 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-
 	var age int64 = 21
-
 	user := &entity.UserDTO{
 		Name: "Alex",
 		Age:  &age,

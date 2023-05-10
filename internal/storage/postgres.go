@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -24,31 +23,6 @@ type PostgresOptions struct {
 	Host     string
 	DBName   string
 	SSLMode  string
-}
-
-var (
-	PostgresOpt *PostgresOptions
-	Postgres    *PostgresPool
-)
-
-func init() {
-	PostgresOpt = &PostgresOptions{
-		Role:     config.AppCfg.Postgres.Role,
-		Password: config.AppCfg.Postgres.Password,
-		Host:     fmt.Sprintf("%s:%s", config.AppCfg.Postgres.Host, config.AppCfg.Postgres.Port),
-		DBName:   config.AppCfg.Postgres.DBName,
-		SSLMode:  config.AppCfg.Postgres.SSLMode,
-	}
-
-	var err error
-	Postgres, err = NewPostgresPool(context.Background(), PostgresOpt)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	if err = Postgres.InitTables(os.Getenv("PG_INIT_TABLES_FILE_PATH")); err != nil {
-		log.Fatal(err.Error())
-	}
 }
 
 func NewPostgresPool(ctx context.Context, opt *PostgresOptions) (*PostgresPool, error) {

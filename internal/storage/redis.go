@@ -2,9 +2,7 @@ package storage
 
 import (
 	"context"
-	"flag"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/kdl-dev/iConText-test-task/internal/config"
@@ -16,33 +14,6 @@ type RedisPool struct {
 	Pool               *redis.Client
 	closeSignal        chan bool
 	successCloseSignal chan bool
-}
-
-var (
-	redisHost *string // flag
-	redisPort *string // flag
-
-	RedisOpt *redis.Options
-	Redis    *RedisPool
-)
-
-func init() {
-	redisHost = flag.String("host", config.AppCfg.Redis.Host, "redis host")
-	redisPort = flag.String("port", config.AppCfg.Redis.Port, "redis port")
-	flag.Parse()
-
-	RedisOpt = &redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", *redisHost, *redisPort),
-		DB:       config.AppCfg.Redis.DB,
-		Username: config.AppCfg.Redis.User,
-		Password: config.AppCfg.Redis.Password,
-	}
-
-	var err error
-	Redis, err = NewRedisPool(context.Background(), RedisOpt)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
 }
 
 func NewRedisPool(ctx context.Context, opt *redis.Options) (*RedisPool, error) {

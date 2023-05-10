@@ -1,24 +1,5 @@
 package config
 
-import (
-	"log"
-
-	"github.com/ilyakaznacheev/cleanenv"
-)
-
-var (
-	loggerConfigFilePath = "config/logger.yaml"
-	logger               Logger
-)
-
-func init() {
-	if err := cleanenv.ReadConfig(loggerConfigFilePath, &logger); err != nil {
-		log.Fatal(err)
-	}
-
-	AppCfg.Logger = logger
-}
-
 type Logger struct {
 	Outputs []struct {
 		Storage  string `yaml:"storage" validate:"required"`

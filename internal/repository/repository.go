@@ -20,14 +20,6 @@ type Repository struct {
 	User
 }
 
-var (
-	Repo *Repository
-)
-
-func init() {
-	Repo = NewRepository(storage.Postgres, storage.Redis)
-}
-
 func NewRepository(pgPool *storage.PostgresPool, redisPool *storage.RedisPool) *Repository {
 	return &Repository{
 		MathOperation: NewMathOperationRepo(redisPool),
