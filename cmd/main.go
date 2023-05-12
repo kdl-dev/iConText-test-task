@@ -106,6 +106,7 @@ func init() {
 func main() {
 	appServer = server.NewServer(httpServer)
 	isGracefullShutdown := make(chan bool, 1)
+	defer close(isGracefullShutdown)
 
 	go func() {
 		logger.Log.Info(fmt.Sprintf("http server run on %s", httpServer.Addr))
